@@ -6,14 +6,14 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 interface library {
-    public void add_Deatail(String Name, String Father_name, int child_age, String gender,
+    public void add_Deatail(String Name, String Father_name, int child_age,
             String Book_Name, String date, String location) throws SQLException;
 
-    public void Fetch_Detail() throws SQLException;
+    public void See_Detail() throws SQLException;
 
-    public void DeleteData(String cname, String faname);
+    public void DeleteData(String cname, String rnumber);
 
-    public void Indivdual_Selection(String name, String fname);
+    public void Indivdual_Selection(String name, String rnumber);
 }
 
 class fetch extends Thread {
@@ -52,20 +52,19 @@ class fetch extends Thread {
 
 class Lib {
 
-    public void add_Deatail(String Name, String Father_name, int child_age, String gender,
+    public void add_Deatail(String Name, String Roll_Number, String Department,
             String Book_Name, String date, String Time_Duration) throws SQLException {
         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/book_detail",
                 "root", "");
         try (Connection conn = SQLConnection.makeConnection()) {
-            String sqlQuery = "insert into detail values(?,?,?,?,?,?,?)";
+            String sqlQuery = "insert into detail values(?,?,?,?,?,?)";
             PreparedStatement pst = con.prepareStatement(sqlQuery);
             pst.setString(1, Name);
-            pst.setString(2, Father_name);
-            pst.setInt(3, child_age);
+            pst.setString(2, Roll_Number);
+            pst.setString(3, Department);
             pst.setString(4, Book_Name);
-            pst.setString(5, gender);
-            pst.setString(6, date);
-            pst.setString(7, Time_Duration);
+            pst.setString(5, date);
+            pst.setString(6, Time_Duration);
             if (pst.executeUpdate() == 1)
                 System.out.println("Record Saved To SQl Database");
             else
@@ -79,8 +78,14 @@ class Lib {
 
     fetch f = new fetch();
 
-    public void Fetch_Detail() throws SQLException {
+    public void See_Detail() throws SQLException {
         f.start();
+        try{
+         f.join();
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
     }
 
     public void Indivdual_Selection(String name, String rnumber) {
@@ -102,9 +107,8 @@ class Lib {
                 System.out.println("Roll Number" + " " + rs1.getString(2));
                 System.out.println("Age" + " " + rs1.getString(3));
                 System.out.println("Book Name" + " " + rs1.getString(4));
-                System.out.println("Gender" + " " + rs1.getString(5));
-                System.out.println("Date" + " " + rs1.getString(6));
-                System.out.println("Time Duration" + " " + rs1.getString(7));
+                System.out.println("Date" + " " + rs1.getString(5));
+                System.out.println("Time Duration" + " " + rs1.getString(6));
                 System.out.println("**************************");
 
             }
@@ -142,7 +146,7 @@ public class Project {
         Lib v = new Lib();
 
         Scanner sc = new Scanner(System.in);
-        char cont;
+        int cont;
         do {
             System.out.println("**************************Library Management System***************************");
             System.out.println("1 : Taking book process ");
@@ -157,47 +161,46 @@ public class Project {
                     String sname = sc.nextLine();
                     System.out.println("Enter Roll Number ");
                     String rnumber = sc.nextLine();
-                    System.out.println("Enter age");
-                    int child_age = sc.nextInt();
+                    System.out.println("Enter Department");
+                    String Department = sc.nextLine();
                     sc.nextLine();
                     System.out.println("Enter Book Name");
                     String book = sc.nextLine();
-                    System.out.println("Enter gender");
-                    String gender = sc.nextLine();
+
                     System.out.println("Enter  Date");
                     String date = sc.nextLine();
                     System.out.println("Enter Time Duration ");
                     String time = sc.nextLine();
-                    v.add_Deatail(sname, rnumber, child_age, book, gender, date, time);
+                v.add_Deatail(sname, rnumber, Department, book, date, time);
                     break;
                 case 2:
-                    v.Fetch_Detail();
+                    v.See_Detail();
 
                     break;
                 case 3:
                     System.out.println("Enter Student Name ");
                     String name = sc.nextLine();
-                    System.out.println("Enter father name");
-                    String fname = sc.nextLine();
-                    v.Indivdual_Selection(name, fname);
+                    System.out.println("Enter Roll number ");
+                    String rnum = sc.nextLine();
+                    v.Indivdual_Selection(name, rnum);
                     break;
                 case 4:
                     System.out.println("Enter Student Name ");
                     String cname = sc.nextLine();
-                    System.out.println("Enter father name");
-                    String faname = sc.nextLine();
-                    v.DeleteData(cname, faname);
+                    System.out.println("Enter Roll number");
+                    String rnum1= sc.nextLine();
+                    v.DeleteData(cname, rnum1);
                     break;
                 default:
                     System.out.println("Select above options");
                     break;
             }
 
-            System.out.println("Do you want to continue");
+            System.out.println("Press 0 to continue");
 
-            cont = sc.next().charAt(0);
+            cont = sc.nextInt();
 
-        } while (cont == 'Y' || cont == 'y');
+        } while (cont == 0);
 
         sc.close();
     }

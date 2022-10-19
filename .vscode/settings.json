@@ -1,0 +1,7 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "c:\\Users\\laptop\\Desktop\\mysql-connector-java-8.0.30.jar",
+        "c:\\Users\\laptop\\Desktop\\protobuf-java-3.19.4.jar"
+    ]
+}
