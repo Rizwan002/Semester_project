@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 interface library {
-    public void add_Deatail(String Name, String Father_name, int child_age,
+    public void add_Deatail(String Name, String Roll_Number, String Department,
             String Book_Name, String date, String location) throws SQLException;
 
     public void See_Detail() throws SQLException;
@@ -16,13 +16,9 @@ interface library {
     public void Indivdual_Selection(String name, String rnumber);
 }
 
-class fetch extends Thread {
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Thread#run()
-     */
-    public void run() {
+class See_Detail extends Thread {
+    
+        public void run() {
 
         try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/book_detail", "root", "")) {
             try {
@@ -53,7 +49,10 @@ class fetch extends Thread {
 class Lib {
 
     public void add_Deatail(String Name, String Roll_Number, String Department,
-            String Book_Name, String date, String Time_Duration) throws SQLException {
+            String Book_Name, String date, String Time_Duration) throws SQLException{ 
+             // database name = book_detail
+             // coloum name  = detail 
+             // my sql connectivity 
         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/book_detail",
                 "root", "");
         try (Connection conn = SQLConnection.makeConnection()) {
@@ -75,10 +74,9 @@ class Lib {
         }
 
     }
-
-    fetch f = new fetch();
-
+// agrigation of thread class 
     public void See_Detail() throws SQLException {
+        See_Detail f = new See_Detail();
         f.start();
         try{
          f.join();
@@ -90,7 +88,6 @@ class Lib {
 
     public void Indivdual_Selection(String name, String rnumber) {
         try {
-            // con =
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/book_detail",
                     "root", "");
 
@@ -105,7 +102,7 @@ class Lib {
                 System.out.println("**************************");
                 System.out.println("Name" + " " + rs1.getString(1));
                 System.out.println("Roll Number" + " " + rs1.getString(2));
-                System.out.println("Age" + " " + rs1.getString(3));
+                System.out.println("Department" + " " + rs1.getString(3));
                 System.out.println("Book Name" + " " + rs1.getString(4));
                 System.out.println("Date" + " " + rs1.getString(5));
                 System.out.println("Time Duration" + " " + rs1.getString(6));
@@ -132,7 +129,7 @@ class Lib {
             pst.execute();
             System.out.println("Data Delected");
         } catch (SQLException e) {
-            System.out.println("Data is not find in the data base ");
+            System.out.println("Data is not found in the data base ");
             e.printStackTrace();
         }
 
@@ -153,6 +150,7 @@ public class Project {
             System.out.println("2 : All Result");
             System.out.println("3 : Search Book Result");
             System.out.println("4 : Delete Book Data");
+            System.out.println("*********************************************************");
             int option = sc.nextInt();
             sc.nextLine();
             switch (option) {
@@ -163,7 +161,6 @@ public class Project {
                     String rnumber = sc.nextLine();
                     System.out.println("Enter Department");
                     String Department = sc.nextLine();
-                    sc.nextLine();
                     System.out.println("Enter Book Name");
                     String book = sc.nextLine();
 
